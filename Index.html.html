@@ -1,0 +1,1057 @@
+<!DOCTYPE html>
+<html lang="en" id="htmlRoot">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO Command Center 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:#0a0d12; --surface:#111520; --surface2:#161c2a; --surface3:#1e2638;
+    --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.12);
+    --accent:#00e5a0; --accent2:#4f7cff; --accent3:#ff6b35; --accent4:#c77dff;
+    --text:#e8edf5; --text2:#8a94a6; --text3:#4a5568;
+    --font-head:'Syne',sans-serif; --font-body:'DM Sans',sans-serif; --font-ar:'Cairo',sans-serif;
+    --radius:12px; --radius-lg:18px;
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{background:var(--bg);color:var(--text);font-family:var(--font-body);min-height:100vh;overflow-x:hidden;}
+  body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+    background-image:radial-gradient(circle at 20% 20%,rgba(0,229,160,0.04) 0%,transparent 50%),
+    radial-gradient(circle at 80% 80%,rgba(79,124,255,0.04) 0%,transparent 50%);}
+
+  /* RTL Arabic mode */
+  body.ar{font-family:var(--font-ar);}
+  body.ar .sidebar{order:1;border-right:none;border-left:1px solid var(--border);}
+  body.ar .app{flex-direction:row-reverse;}
+  body.ar .msg.user{align-items:flex-start;}
+  body.ar .msg.ai{align-items:flex-end;}
+  body.ar .msg.user .msg-bubble{border-radius:12px 12px 12px 2px;}
+  body.ar .msg.ai .msg-bubble{border-radius:12px 12px 2px 12px;}
+  body.ar .chat-box,.ar .msg-bubble{direction:rtl;text-align:right;}
+  body.ar .setup-card,.ar .field label,.ar .section-heading{direction:rtl;text-align:right;}
+
+  .app{display:flex;height:100vh;position:relative;z-index:1;}
+
+  /* SIDEBAR */
+  .sidebar{width:240px;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto;}
+  .logo{padding:24px 20px 20px;border-bottom:1px solid var(--border);}
+  .logo-text{font-family:var(--font-head);font-size:18px;font-weight:800;letter-spacing:-0.02em;}
+  .logo-text span{color:var(--accent);}
+  .logo-sub{font-size:10px;color:var(--text3);letter-spacing:0.12em;text-transform:uppercase;margin-top:3px;}
+  .nav-section{padding:16px 12px 8px;}
+  .nav-label{font-size:10px;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;padding:0 8px;margin-bottom:6px;}
+  .nav-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text2);transition:all 0.15s;margin-bottom:2px;border:none;background:none;width:100%;text-align:left;}
+  .nav-item:hover{background:var(--surface2);color:var(--text);}
+  .nav-item.active{background:rgba(0,229,160,0.1);color:var(--accent);}
+  .nav-item .icon{width:16px;height:16px;flex-shrink:0;opacity:0.7;}
+  .nav-item.active .icon{opacity:1;}
+  .project-list{padding:8px 12px;}
+  .project-item{display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--text2);transition:all 0.15s;margin-bottom:2px;}
+  .project-item:hover{background:var(--surface2);color:var(--text);}
+  .project-item.active{background:var(--surface2);color:var(--text);}
+  .project-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+  .add-project{display:flex;align-items:center;gap:8px;padding:8px 10px;margin:4px 0 12px;border-radius:8px;cursor:pointer;font-size:12px;color:var(--accent);opacity:0.7;transition:opacity 0.15s;border:none;background:none;width:100%;}
+  .add-project:hover{opacity:1;}
+
+  /* MAIN */
+  .main{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+  .topbar{padding:14px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;background:rgba(10,13,18,0.8);backdrop-filter:blur(10px);}
+  .topbar-left{display:flex;align-items:center;gap:12px;}
+  .page-title{font-family:var(--font-head);font-size:16px;font-weight:700;}
+  .project-badge{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);}
+  .llm-selector{display:flex;gap:6px;}
+  .llm-btn{font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer;transition:all 0.15s;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:var(--font-body);}
+  .llm-btn.active{background:var(--accent2);border-color:var(--accent2);color:#fff;}
+
+  /* LANG TOGGLE */
+  .lang-toggle{display:flex;gap:4px;background:var(--surface2);border-radius:8px;padding:3px;}
+  .lang-btn{padding:4px 10px;border-radius:6px;font-size:11px;cursor:pointer;border:none;background:transparent;color:var(--text2);font-family:var(--font-body);transition:all 0.15s;}
+  .lang-btn.active{background:var(--accent);color:#0a0d12;font-weight:700;}
+
+  .content{flex:1;overflow-y:auto;padding:28px;display:flex;flex-direction:column;gap:24px;}
+
+  /* TABS */
+  .segment-tabs{display:flex;gap:6px;flex-wrap:wrap;}
+  .seg-tab{padding:7px 16px;border-radius:8px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border2);background:transparent;color:var(--text2);transition:all 0.15s;font-family:var(--font-body);}
+  .seg-tab.active-seo{background:rgba(0,229,160,0.12);border-color:var(--accent);color:var(--accent);}
+  .seg-tab.active-aeo{background:rgba(79,124,255,0.12);border-color:var(--accent2);color:var(--accent2);}
+  .seg-tab.active-geo{background:rgba(199,125,255,0.12);border-color:var(--accent4);color:var(--accent4);}
+  .seg-tab.active-local{background:rgba(255,107,53,0.12);border-color:var(--accent3);color:var(--accent3);}
+  .seg-tab.active-prog{background:rgba(255,200,0,0.12);border-color:#ffc800;color:#ffc800;}
+  .seg-tab.active-technical{background:rgba(255,107,53,0.12);border-color:var(--accent3);color:var(--accent3);}
+
+  /* CARDS */
+  .setup-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);padding:22px;}
+  .setup-card h3{font-family:var(--font-head);font-size:14px;font-weight:700;margin-bottom:16px;color:var(--text2);letter-spacing:0.04em;text-transform:uppercase;}
+  .setup-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;}
+  .field label{display:block;font-size:11px;color:var(--text3);margin-bottom:5px;text-transform:uppercase;letter-spacing:0.08em;}
+  .field input,.field select,.field textarea{width:100%;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-size:13px;font-family:inherit;outline:none;transition:border-color 0.15s;}
+  .field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent);}
+  .field select option{background:var(--surface2);}
+  .field textarea{min-height:70px;resize:vertical;}
+
+  .tool-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px;}
+  .tool-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden;}
+  .tool-card::before{content:'';position:absolute;inset:0;opacity:0;transition:opacity 0.2s;}
+  .tool-card.seo::before{background:radial-gradient(circle at top left,rgba(0,229,160,0.06),transparent 60%);}
+  .tool-card.aeo::before{background:radial-gradient(circle at top left,rgba(79,124,255,0.06),transparent 60%);}
+  .tool-card.geo::before{background:radial-gradient(circle at top left,rgba(199,125,255,0.06),transparent 60%);}
+  .tool-card.local::before{background:radial-gradient(circle at top left,rgba(255,107,53,0.06),transparent 60%);}
+  .tool-card.prog::before{background:radial-gradient(circle at top left,rgba(255,200,0,0.06),transparent 60%);}
+  .tool-card:hover{border-color:var(--border2);transform:translateY(-1px);}
+  .tool-card:hover::before{opacity:1;}
+  .tool-icon{font-size:22px;margin-bottom:10px;}
+  .tool-name{font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:4px;}
+  .tool-desc{font-size:11px;color:var(--text2);line-height:1.5;}
+  .tool-tag{display:inline-block;font-size:9px;padding:2px 7px;border-radius:4px;margin-top:8px;letter-spacing:0.06em;font-weight:500;}
+  .tag-seo{background:rgba(0,229,160,0.1);color:var(--accent);}
+  .tag-aeo{background:rgba(79,124,255,0.1);color:var(--accent2);}
+  .tag-geo{background:rgba(199,125,255,0.1);color:var(--accent4);}
+  .tag-local{background:rgba(255,107,53,0.1);color:var(--accent3);}
+  .tag-prog{background:rgba(255,200,0,0.1);color:#ffc800;}
+  .tag-tech{background:rgba(255,107,53,0.1);color:var(--accent3);}
+
+  /* CHAT */
+  .chat-wrap{display:flex;flex-direction:column;gap:12px;}
+  .chat-header{display:flex;align-items:center;justify-content:space-between;}
+  .chat-header-left{display:flex;align-items:center;gap:10px;}
+  .tool-active-badge{font-size:11px;padding:4px 12px;border-radius:20px;font-weight:500;background:rgba(0,229,160,0.1);color:var(--accent);border:1px solid rgba(0,229,160,0.2);}
+  .chat-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);min-height:340px;max-height:500px;overflow-y:auto;padding:20px;display:flex;flex-direction:column;gap:16px;}
+  .msg{display:flex;flex-direction:column;gap:5px;animation:msgIn 0.3s ease;}
+  @keyframes msgIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+  .msg.user{align-items:flex-end;}
+  .msg.ai{align-items:flex-start;}
+  .msg-bubble{max-width:88%;padding:12px 16px;border-radius:12px;font-size:13px;line-height:1.65;}
+  .msg.user .msg-bubble{background:rgba(0,229,160,0.12);color:var(--text);border:1px solid rgba(0,229,160,0.15);border-radius:12px 12px 2px 12px;}
+  .msg.ai .msg-bubble{background:var(--surface2);color:var(--text);border:1px solid var(--border);border-radius:12px 12px 12px 2px;}
+  .msg-meta{font-size:10px;color:var(--text3);}
+  .msg-bubble h4{font-family:var(--font-head);font-size:13px;font-weight:700;margin-bottom:6px;color:var(--accent);}
+  .msg-bubble ul{padding-left:16px;margin-top:6px;}
+  .msg-bubble li{margin-bottom:4px;}
+  .msg-bubble .kw-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+  .msg-bubble .kw-pill{font-size:11px;padding:3px 10px;border-radius:20px;background:rgba(79,124,255,0.12);color:var(--accent2);border:1px solid rgba(79,124,255,0.2);}
+  .typing{display:flex;align-items:center;gap:5px;padding:10px 14px;}
+  .typing span{width:6px;height:6px;border-radius:50%;background:var(--text3);animation:bounce 1s infinite;}
+  .typing span:nth-child(2){animation-delay:0.15s;}
+  .typing span:nth-child(3){animation-delay:0.3s;}
+  @keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
+  .chat-input-row{display:flex;gap:10px;align-items:flex-end;}
+  .chat-input{flex:1;background:var(--surface);border:1px solid var(--border2);border-radius:12px;padding:12px 16px;color:var(--text);font-size:13px;font-family:inherit;outline:none;resize:none;min-height:48px;max-height:120px;transition:border-color 0.15s;line-height:1.5;}
+  .chat-input:focus{border-color:var(--accent);}
+  .send-btn{background:var(--accent);color:#0a0d12;border:none;border-radius:10px;padding:12px 18px;cursor:pointer;font-size:13px;font-weight:700;font-family:var(--font-head);transition:all 0.15s;white-space:nowrap;flex-shrink:0;}
+  .send-btn:hover{background:#00ffb3;}
+  .send-btn:disabled{opacity:0.4;cursor:not-allowed;}
+  .quick-prompts{display:flex;gap:6px;flex-wrap:wrap;}
+  .qp-btn{font-size:11px;padding:5px 12px;border-radius:20px;cursor:pointer;transition:all 0.15s;border:1px solid var(--border2);background:transparent;color:var(--text2);font-family:inherit;}
+  .qp-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+  /* MODAL */
+  .modal-bg{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:100;align-items:center;justify-content:center;backdrop-filter:blur(4px);}
+  .modal-bg.open{display:flex;}
+  .modal{background:var(--surface);border:1px solid var(--border2);border-radius:var(--radius-lg);padding:28px;width:90%;max-width:560px;max-height:90vh;overflow-y:auto;}
+  .modal h2{font-family:var(--font-head);font-size:18px;font-weight:800;margin-bottom:20px;}
+  .modal-grid{display:grid;gap:14px;}
+  .modal-actions{display:flex;gap:10px;margin-top:20px;justify-content:flex-end;}
+  .btn-primary{background:var(--accent);color:#0a0d12;border:none;border-radius:8px;padding:9px 20px;cursor:pointer;font-size:13px;font-weight:700;font-family:var(--font-head);}
+  .btn-secondary{background:transparent;color:var(--text2);border:1px solid var(--border2);border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;font-family:var(--font-body);}
+  .btn-primary:hover{background:#00ffb3;}
+  .btn-danger{background:rgba(255,107,53,0.15);color:var(--accent3);border:1px solid rgba(255,107,53,0.3);border-radius:8px;padding:9px 16px;cursor:pointer;font-size:13px;font-family:var(--font-body);}
+
+  /* API KEY SECTION */
+  .api-section{background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+  .api-section-title{font-size:12px;font-weight:700;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+  .api-status{width:7px;height:7px;border-radius:50%;display:inline-block;}
+  .api-status.ok{background:var(--accent);}
+  .api-status.empty{background:var(--text3);}
+  .api-key-input{width:100%;background:var(--bg);border:1px solid var(--border2);border-radius:8px;padding:9px 12px;color:var(--text);font-size:12px;font-family:monospace;outline:none;}
+  .api-key-input:focus{border-color:var(--accent);}
+  .api-note{font-size:11px;color:var(--text3);margin-top:6px;line-height:1.5;}
+  .api-note a{color:var(--accent2);text-decoration:none;}
+
+  /* HOSTING GUIDE */
+  .host-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border);}
+  .host-step:last-child{border-bottom:none;}
+  .host-num{width:24px;height:24px;border-radius:50%;background:var(--accent);color:#0a0d12;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:var(--font-head);}
+  .host-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:3px;}
+  .host-desc{font-size:12px;color:var(--text2);line-height:1.6;}
+  .host-desc code{background:var(--surface2);padding:1px 6px;border-radius:4px;font-size:11px;color:var(--accent4);border:1px solid var(--border);}
+  .host-link{color:var(--accent2);font-size:11px;text-decoration:none;margin-top:4px;display:inline-block;}
+
+  /* STATUS + misc */
+  .status-bar{padding:6px 28px;border-top:1px solid var(--border);display:flex;align-items:center;gap:16px;background:var(--surface);}
+  .status-dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2s infinite;}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.4}}
+  .status-text{font-size:11px;color:var(--text3);}
+  .status-model{font-size:11px;color:var(--accent2);}
+  .welcome-banner{background:linear-gradient(135deg,rgba(0,229,160,0.06) 0%,rgba(79,124,255,0.06) 100%);border:1px solid rgba(0,229,160,0.15);border-radius:var(--radius-lg);padding:20px 24px;display:flex;align-items:center;justify-content:space-between;gap:16px;}
+  .welcome-title{font-family:var(--font-head);font-size:20px;font-weight:800;}
+  .welcome-title span{color:var(--accent);}
+  .welcome-sub{font-size:12px;color:var(--text2);margin-top:5px;}
+  .welcome-stats{display:flex;gap:24px;flex-shrink:0;}
+  .stat{text-align:center;}
+  .stat-num{font-family:var(--font-head);font-size:20px;font-weight:800;color:var(--accent);}
+  .stat-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:0.08em;}
+  .section-heading{font-family:var(--font-head);font-size:12px;font-weight:700;color:var(--text3);letter-spacing:0.1em;text-transform:uppercase;}
+  .empty-state{text-align:center;padding:40px 20px;color:var(--text3);}
+  .empty-state .big-icon{font-size:40px;margin-bottom:12px;opacity:0.4;}
+  .empty-state p{font-size:13px;}
+  .hidden{display:none!important;}
+  ::-webkit-scrollbar{width:4px;height:4px;}
+  ::-webkit-scrollbar-track{background:transparent;}
+  ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px;}
+
+  /* AR bubble overrides */
+  .ar-output{direction:rtl;text-align:right;font-family:var(--font-ar);line-height:1.9;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-text">SEO<span>CMD</span></div>
+      <div class="logo-sub">Command Center 2026</div>
+    </div>
+    <div class="nav-section">
+      <div class="nav-label">Workspace</div>
+      <button class="nav-item active" onclick="showView('dashboard',this)">
+        <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
+        Dashboard
+      </button>
+      <button class="nav-item" onclick="showView('chat',this)">
+        <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M14 1H2a1 1 0 00-1 1v9a1 1 0 001 1h1v3l4-3h7a1 1 0 001-1V2a1 1 0 00-1-1z"/></svg>
+        SEO Assistant
+      </button>
+      <button class="nav-item" onclick="showView('tools',this)">
+        <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M13.5 2.5l-2-2a1 1 0 00-1.4 0L4 6.6l-.9 2.7 2.7-.9 6.1-6.1a1 1 0 000-1.4zM3 12h10v1H3z"/></svg>
+        SEO Tools
+      </button>
+      <button class="nav-item" onclick="showView('strategy',this)">
+        <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M2 12l3-6 3 4 2-3 4 5H2z"/></svg>
+        Strategy Builder
+      </button>
+      <button class="nav-item" onclick="showView('hosting',this)">
+        <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><rect x="1" y="3" width="14" height="4" rx="1"/><rect x="1" y="9" width="14" height="4" rx="1"/><circle cx="4" cy="5" r="1"/><circle cx="4" cy="11" r="1"/></svg>
+        Hosting Guide
+      </button>
+    </div>
+
+    <div class="nav-section" style="border-top:1px solid var(--border);padding-top:14px;">
+      <div class="nav-label">Projects</div>
+    </div>
+    <div class="project-list" id="projectList">
+      <div class="project-item active" onclick="setProject(this,'B2B Food Supply – KSA','#00e5a0')">
+        <div class="project-dot" style="background:#00e5a0"></div><span>B2B Food Supply – KSA</span>
+      </div>
+      <div class="project-item" onclick="setProject(this,'E-Commerce Retail','#4f7cff')">
+        <div class="project-dot" style="background:#4f7cff"></div><span>E-Commerce Retail</span>
+      </div>
+    </div>
+    <div style="padding:0 12px;">
+      <button class="add-project" onclick="openModal('newProject')">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        New Project
+      </button>
+    </div>
+
+    <div style="margin-top:auto;padding:16px 12px;border-top:1px solid var(--border);">
+      <div class="nav-label" style="padding-left:8px;margin-bottom:8px;">LLM Engine</div>
+      <div id="sidebarLLM" style="display:flex;flex-direction:column;gap:4px;">
+        <button class="nav-item active" onclick="selectLLM(this,'Grok')" style="font-size:12px;">
+          <span style="width:8px;height:8px;background:#ff6b35;border-radius:50%;flex-shrink:0;"></span> Grok (xAI)
+        </button>
+        <button class="nav-item" onclick="selectLLM(this,'Claude')" style="font-size:12px;">
+          <span style="width:8px;height:8px;background:#00e5a0;border-radius:50%;flex-shrink:0;"></span> Claude
+        </button>
+        <button class="nav-item" onclick="selectLLM(this,'GPT-4o')" style="font-size:12px;">
+          <span style="width:8px;height:8px;background:#4f7cff;border-radius:50%;flex-shrink:0;"></span> GPT-4o
+        </button>
+        <button class="nav-item" onclick="selectLLM(this,'Gemini')" style="font-size:12px;">
+          <span style="width:8px;height:8px;background:#c77dff;border-radius:50%;flex-shrink:0;"></span> Gemini
+        </button>
+      </div>
+      <button class="nav-item" onclick="openModal('apiKeys')" style="margin-top:8px;font-size:12px;color:var(--accent3);">
+        <svg class="icon" viewBox="0 0 16 16" fill="currentColor"><path d="M11 1a4 4 0 00-3.87 5L1 12v3h3l1-1v-2h2v-2h2l1.12-1.13A4 4 0 1011 1zm1 4a1 1 0 110-2 1 1 0 010 2z"/></svg>
+        API Keys &amp; Settings
+      </button>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="topbar">
+      <div class="topbar-left">
+        <span class="page-title" id="pageTitle">Dashboard</span>
+        <span class="project-badge" id="projectBadge">B2B Food Supply – KSA</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <!-- Language Toggle -->
+        <div class="lang-toggle">
+          <button class="lang-btn active" id="btnEN" onclick="setLang('en')">EN</button>
+          <button class="lang-btn" id="btnAR" onclick="setLang('ar')">عربي</button>
+          <button class="lang-btn" id="btnBI" onclick="setLang('bi')">EN+AR</button>
+        </div>
+        <span style="font-size:11px;color:var(--text3);">For:</span>
+        <div class="llm-selector">
+          <button class="llm-btn active" onclick="toggleOpt(this,'Google')">Google</button>
+          <button class="llm-btn active" onclick="toggleOpt(this,'ChatGPT')">ChatGPT</button>
+          <button class="llm-btn active" onclick="toggleOpt(this,'Gemini')">Gemini</button>
+          <button class="llm-btn" onclick="toggleOpt(this,'Voice')">Voice</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="view-dashboard" class="content">
+      <div class="welcome-banner">
+        <div>
+          <div class="welcome-title">SEO <span>Command</span> Center</div>
+          <div class="welcome-sub">2026 · SEO + AEO + GEO + Local + Programmatic · Arabic &amp; English · Multi-LLM</div>
+        </div>
+        <div class="welcome-stats">
+          <div class="stat"><div class="stat-num" id="projCount">2</div><div class="stat-label">Projects</div></div>
+          <div class="stat"><div class="stat-num">7</div><div class="stat-label">Segments</div></div>
+          <div class="stat"><div class="stat-num">4</div><div class="stat-label">LLMs</div></div>
+        </div>
+      </div>
+      <div>
+        <div class="section-heading" style="margin-bottom:12px;">Project Context</div>
+        <div class="setup-card">
+          <h3>Project Setup</h3>
+          <div class="setup-grid">
+            <div class="field"><label>Business Name</label><input id="bizName" value="Your Brand" placeholder="e.g. Al Hadeel Foods"></div>
+            <div class="field"><label>Industry / Niche</label><input id="bizNiche" value="B2B FMCG Catering"></div>
+            <div class="field"><label>Target Country</label>
+              <select id="bizCountry"><option>Saudi Arabia</option><option>UAE</option><option>Kuwait</option><option>Qatar</option><option>Bahrain</option><option>Oman</option><option>Egypt</option><option>Jordan</option></select>
+            </div>
+            <div class="field"><label>Audience</label>
+              <select id="bizAudience"><option>B2B</option><option>B2C</option><option>Both</option></select>
+            </div>
+            <div class="field"><label>Language Output</label>
+              <select id="bizLang"><option>English</option><option>Arabic</option><option>Bilingual</option></select>
+            </div>
+            <div class="field"><label>City / Region</label><input id="bizCity" value="Riyadh, Jeddah"></div>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>Products / Services</label>
+            <textarea id="bizProducts">Cheese, Olives, Fresh Cream, Jam, Halawa, Pickles, Mortadella</textarea>
+          </div>
+          <div class="field" style="margin-top:12px;"><label>SEO Goal</label>
+            <select id="bizGoal">
+              <option>Rank on Google &amp; get B2B enquiries</option>
+              <option>Appear in AI answers (AEO)</option>
+              <option>Build brand authority (GEO)</option>
+              <option>Local SEO – dominate city/region</option>
+              <option>Programmatic SEO – scale pages</option>
+            </select>
+          </div>
+          <button class="btn-primary" style="margin-top:16px;" onclick="saveContext()">Save Context → Use in All Tools</button>
+        </div>
+      </div>
+      <div>
+        <div class="section-heading" style="margin-bottom:12px;">Quick Launch</div>
+        <div class="tool-grid">
+          <div class="tool-card seo" onclick="launchTool('keyword')"><div class="tool-icon">🔑</div><div class="tool-name">Keyword Engine</div><div class="tool-desc">All 4 intent types, long & short tail, EN + AR</div><span class="tool-tag tag-seo">SEO</span></div>
+          <div class="tool-card aeo" onclick="launchTool('aeo')"><div class="tool-icon">🤖</div><div class="tool-name">AEO Writer</div><div class="tool-desc">AI-quotable answers for ChatGPT & Gemini</div><span class="tool-tag tag-aeo">AEO</span></div>
+          <div class="tool-card geo" onclick="launchTool('geo')"><div class="tool-icon">🌐</div><div class="tool-name">GEO Strategy</div><div class="tool-desc">Brand signal planning for generative search</div><span class="tool-tag tag-geo">GEO</span></div>
+          <div class="tool-card local" onclick="launchTool('local')"><div class="tool-icon">📍</div><div class="tool-name">Local SEO</div><div class="tool-desc">Google Maps & local KSA search dominance</div><span class="tool-tag tag-local">Local</span></div>
+          <div class="tool-card prog" onclick="launchTool('programmatic')"><div class="tool-icon">⚡</div><div class="tool-name">Programmatic SEO</div><div class="tool-desc">Scale 100s of pages from one template</div><span class="tool-tag tag-prog">Programmatic</span></div>
+          <div class="tool-card seo" onclick="launchTool('content')"><div class="tool-icon">✍️</div><div class="tool-name">Content Writer</div><div class="tool-desc">Pillar pages, FAQs, meta, schema — bilingual</div><span class="tool-tag tag-seo">Content</span></div>
+          <div class="tool-card aeo" onclick="launchTool('cluster')"><div class="tool-icon">🗺️</div><div class="tool-name">Topic Clusters</div><div class="tool-desc">Topical authority map for your niche</div><span class="tool-tag tag-aeo">Strategy</span></div>
+          <div class="tool-card local" onclick="launchTool('audit')"><div class="tool-icon">🔍</div><div class="tool-name">Technical Audit</div><div class="tool-desc">Schema, Core Web Vitals, crawl checklist</div><span class="tool-tag tag-tech">Technical</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOOLS VIEW -->
+    <div id="view-tools" class="content hidden">
+      <div class="segment-tabs" id="segTabs">
+        <button class="seg-tab active-seo" onclick="filterTools(this,'all')">All Tools</button>
+        <button class="seg-tab" onclick="filterTools(this,'seo')">SEO</button>
+        <button class="seg-tab" onclick="filterTools(this,'aeo')">AEO</button>
+        <button class="seg-tab" onclick="filterTools(this,'geo')">GEO</button>
+        <button class="seg-tab" onclick="filterTools(this,'local')">Local</button>
+        <button class="seg-tab" onclick="filterTools(this,'prog')">Programmatic</button>
+        <button class="seg-tab" onclick="filterTools(this,'technical')">Technical</button>
+      </div>
+      <div class="tool-grid" id="allToolsGrid"></div>
+    </div>
+
+    <!-- CHAT VIEW -->
+    <div id="view-chat" class="content hidden">
+      <div class="chat-wrap">
+        <div class="chat-header">
+          <div class="chat-header-left">
+            <span class="section-heading">SEO Assistant</span>
+            <span class="tool-active-badge" id="activeTool">💡 General SEO</span>
+            <span id="langBadge" style="font-size:10px;padding:3px 8px;border-radius:10px;background:rgba(199,125,255,0.1);color:var(--accent4);border:1px solid rgba(199,125,255,0.2);">EN</span>
+          </div>
+          <button class="btn-secondary" onclick="clearChat()" style="font-size:11px;padding:4px 12px;">Clear</button>
+        </div>
+        <div class="quick-prompts" id="quickPrompts">
+          <button class="qp-btn" onclick="sendQuick(this)">Generate keywords for Cheese collection</button>
+          <button class="qp-btn" onclick="sendQuick(this)">AEO answer: bulk cheese supply Saudi Arabia</button>
+          <button class="qp-btn" onclick="sendQuick(this)">Topic cluster for B2B catering food KSA</button>
+          <button class="qp-btn" onclick="sendQuick(this)">Local SEO strategy Riyadh food supplier</button>
+          <button class="qp-btn" onclick="sendQuick(this)">Programmatic SEO template cheese varieties</button>
+          <button class="qp-btn" onclick="sendQuick(this)">اكتب كلمات مفتاحية SEO بالعربية للجبن</button>
+        </div>
+        <div class="chat-box" id="chatBox">
+          <div class="msg ai">
+            <div class="msg-bubble">
+              <h4>👋 SEO Command Center — Ready</h4>
+              Project loaded: <strong>B2B Food Supply KSA</strong> · LLM: <strong id="activeLLMLabel">Grok</strong><br><br>
+              Switch language output using <strong>EN / عربي / EN+AR</strong> in the top bar. All 2026 SEO segments available — traditional SEO, AEO, GEO, Local, Programmatic, Technical, and E-E-A-T.
+            </div>
+            <div class="msg-meta">SEO CMD · Ready</div>
+          </div>
+        </div>
+        <div class="chat-input-row">
+          <textarea class="chat-input" id="chatInput" rows="1" placeholder="Ask in English or اسأل بالعربية..." onkeydown="handleKey(event)"></textarea>
+          <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send ↗</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- STRATEGY VIEW -->
+    <div id="view-strategy" class="content hidden">
+      <div class="welcome-banner" style="background:linear-gradient(135deg,rgba(79,124,255,0.06),rgba(199,125,255,0.06));border-color:rgba(79,124,255,0.2);">
+        <div>
+          <div class="welcome-title" style="font-size:16px;">Strategy <span style="color:var(--accent2);">Builder</span></div>
+          <div class="welcome-sub">Full 2026 SEO + AEO + GEO plan for your active project</div>
+        </div>
+        <button class="btn-primary" onclick="buildStrategy()">Generate Strategy ↗</button>
+      </div>
+      <div id="strategyOutput" class="chat-box" style="min-height:400px;">
+        <div class="empty-state"><div class="big-icon">🗺️</div><p>Click Generate Strategy to build your full plan</p></div>
+      </div>
+    </div>
+
+    <!-- HOSTING GUIDE VIEW -->
+    <div id="view-hosting" class="content hidden">
+      <div class="welcome-banner" style="background:linear-gradient(135deg,rgba(255,107,53,0.06),rgba(255,200,0,0.06));border-color:rgba(255,107,53,0.2);">
+        <div>
+          <div class="welcome-title" style="font-size:16px;">Hosting <span style="color:var(--accent3);">Guide</span></div>
+          <div class="welcome-sub">How to deploy this app outside Claude — for free or paid hosting</div>
+        </div>
+      </div>
+      <div class="setup-card">
+        <h3>Step-by-Step: Host Outside Claude</h3>
+        <div>
+          <div class="host-step">
+            <div class="host-num">1</div>
+            <div>
+              <div class="host-title">Download this HTML file</div>
+              <div class="host-desc">Click the download button in Claude's output panel to save <code>seo-command-center-v2.html</code> to your computer. It's one single file — no dependencies.</div>
+            </div>
+          </div>
+          <div class="host-step">
+            <div class="host-num">2</div>
+            <div>
+              <div class="host-title">Add your API keys</div>
+              <div class="host-desc">Open the file in a text editor (VS Code, Notepad++). Find the line <code>const KEYS = {</code> and replace the placeholder values with your real keys. Save the file.</div>
+            </div>
+          </div>
+          <div class="host-step">
+            <div class="host-num">3</div>
+            <div>
+              <div class="host-title">⚠️ CORS Issue — You need a backend proxy</div>
+              <div class="host-desc">Browser security blocks direct API calls to xAI/Anthropic/OpenAI from a plain HTML file. You have two options:<br><br>
+              <strong>Option A (Easy) — Netlify + Edge Function:</strong> Free, 5 min setup. Deploy the file to Netlify and add one serverless function that proxies the API call. Hides your key from browser.<br><br>
+              <strong>Option B (Full control) — Your own server:</strong> Node.js/Express backend on any VPS (DigitalOcean $6/mo, or free on Railway.app).</div>
+              <a href="https://www.netlify.com" target="_blank" class="host-link">→ netlify.com (free tier)</a> &nbsp;
+              <a href="https://railway.app" target="_blank" class="host-link">→ railway.app (free tier)</a>
+            </div>
+          </div>
+          <div class="host-step">
+            <div class="host-num">4</div>
+            <div>
+              <div class="host-title">Recommended: Netlify Deploy (Easiest Path)</div>
+              <div class="host-desc">
+                1. Create free account at netlify.com<br>
+                2. Drag &amp; drop your HTML file onto Netlify's dashboard<br>
+                3. Go to <code>Functions</code> → create <code>netlify/functions/proxy.js</code><br>
+                4. Paste the proxy code from the box below<br>
+                5. Add your API key in Netlify → Site Settings → Environment Variables as <code>GROK_API_KEY</code><br>
+                6. Your app is live at <code>yoursite.netlify.app</code> — shareable with clients
+              </div>
+            </div>
+          </div>
+          <div class="host-step">
+            <div class="host-num">5</div>
+            <div>
+              <div class="host-title">Netlify Proxy Function Code</div>
+              <div class="host-desc">Create file: <code>netlify/functions/proxy.js</code></div>
+              <pre style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px;margin-top:10px;font-size:11px;color:var(--accent4);overflow-x:auto;line-height:1.7;">exports.handler = async (event) => {
+  const { provider, payload } = JSON.parse(event.body);
+  const apis = {
+    grok:    { url:'https://api.x.ai/v1/chat/completions',    key: process.env.GROK_API_KEY },
+    claude:  { url:'https://api.anthropic.com/v1/messages',   key: process.env.CLAUDE_API_KEY },
+    openai:  { url:'https://api.openai.com/v1/chat/completions', key: process.env.OPENAI_API_KEY },
+    gemini:  { url:'https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent',
+               key: process.env.GEMINI_API_KEY }
+  };
+  const api = apis[provider];
+  if(!api) return { statusCode:400, body:'Unknown provider' };
+  const headers = { 'Content-Type':'application/json', 'Authorization':'Bearer '+api.key };
+  if(provider==='claude') headers['anthropic-version'] = '2023-06-01';
+  const resp = await fetch(api.url, { method:'POST', headers, body: JSON.stringify(payload) });
+  const data = await resp.json();
+  return { statusCode:200, headers:{'Content-Type':'application/json'}, body: JSON.stringify(data) };
+};</pre>
+            </div>
+          </div>
+          <div class="host-step">
+            <div class="host-num">6</div>
+            <div>
+              <div class="host-title">Point the app to your proxy</div>
+              <div class="host-desc">In the HTML file, find <code>const PROXY_URL</code> and set it to your Netlify function URL:<br>
+              <code>const PROXY_URL = 'https://yoursite.netlify.app/.netlify/functions/proxy';</code><br><br>
+              The app will route all LLM calls through your secure proxy — API keys never exposed in browser.</div>
+            </div>
+          </div>
+          <div class="host-step">
+            <div class="host-num">7</div>
+            <div>
+              <div class="host-title">Custom domain (optional)</div>
+              <div class="host-desc">In Netlify → Domain Settings → Add custom domain. Point your DNS to Netlify. Your app becomes <code>seo.yourbrand.com</code>. Free SSL included.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <div class="status-dot"></div>
+      <span class="status-text">Connected ·</span>
+      <span class="status-model" id="statusModel">Grok (grok-3-latest)</span>
+      <span id="statusLang" style="font-size:11px;color:var(--accent4);margin-left:8px;">🌐 EN</span>
+      <span class="status-text" style="margin-left:auto;" id="statusProject">Project: B2B Food Supply – KSA</span>
+    </div>
+  </div>
+</div>
+
+<!-- NEW PROJECT MODAL -->
+<div class="modal-bg" id="modal-newProject">
+  <div class="modal">
+    <h2>New SEO Project</h2>
+    <div class="modal-grid">
+      <div class="field"><label>Project Name</label><input id="np-name" placeholder="e.g. Riyadh Restaurant Chain"></div>
+      <div class="field"><label>Business Name</label><input id="np-brand" placeholder="e.g. Al Noor Foods"></div>
+      <div class="field"><label>Industry</label><input id="np-industry" placeholder="e.g. Food & Beverage"></div>
+      <div class="field"><label>Country</label>
+        <select id="np-country"><option>Saudi Arabia</option><option>UAE</option><option>Kuwait</option><option>Qatar</option><option>Bahrain</option><option>Oman</option></select>
+      </div>
+      <div class="field"><label>Audience</label>
+        <select id="np-audience"><option>B2B</option><option>B2C</option><option>Both</option></select>
+      </div>
+      <div class="field"><label>Color</label>
+        <select id="np-color">
+          <option value="#c77dff">Purple</option><option value="#ff6b35">Orange</option>
+          <option value="#ffc800">Yellow</option><option value="#00e5a0">Green</option>
+          <option value="#4f7cff">Blue</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-secondary" onclick="closeModal('newProject')">Cancel</button>
+      <button class="btn-primary" onclick="createProject()">Create Project</button>
+    </div>
+  </div>
+</div>
+
+<!-- API KEYS MODAL -->
+<div class="modal-bg" id="modal-apiKeys">
+  <div class="modal">
+    <h2>🔑 API Keys &amp; Settings</h2>
+    <p style="font-size:12px;color:var(--text2);margin-bottom:18px;line-height:1.6;">Keys are stored in your browser's localStorage only — never sent anywhere except the respective API. When hosting externally, move keys to server environment variables (see Hosting Guide).</p>
+
+    <div class="api-section">
+      <div class="api-section-title"><span class="api-status" id="st-grok"></span> Grok (xAI) — Recommended</div>
+      <input class="api-key-input" id="key-grok" type="password" placeholder="xai-xxxxxxxxxxxxxxxx">
+      <div class="api-note">Get key at <a href="https://console.x.ai" target="_blank">console.x.ai</a> → API Keys. Model: <code>grok-3-latest</code>. OpenAI-compatible format.</div>
+    </div>
+
+    <div class="api-section">
+      <div class="api-section-title"><span class="api-status" id="st-claude"></span> Claude (Anthropic)</div>
+      <input class="api-key-input" id="key-claude" type="password" placeholder="sk-ant-xxxxxxxx">
+      <div class="api-note">Get key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a> → API Keys.</div>
+    </div>
+
+    <div class="api-section">
+      <div class="api-section-title"><span class="api-status" id="st-openai"></span> OpenAI (GPT-4o)</div>
+      <input class="api-key-input" id="key-openai" type="password" placeholder="sk-xxxxxxxx">
+      <div class="api-note">Get key at <a href="https://platform.openai.com" target="_blank">platform.openai.com</a> → API Keys.</div>
+    </div>
+
+    <div class="api-section">
+      <div class="api-section-title"><span class="api-status" id="st-gemini"></span> Gemini (Google)</div>
+      <input class="api-key-input" id="key-gemini" type="password" placeholder="AIzaxxxxxxxx">
+      <div class="api-note">Get key at <a href="https://aistudio.google.com" target="_blank">aistudio.google.com</a> → Get API Key.</div>
+    </div>
+
+    <div class="api-section" style="background:rgba(255,107,53,0.05);border-color:rgba(255,107,53,0.2);">
+      <div class="api-section-title" style="color:var(--accent3);">⚠️ Security Note for External Hosting</div>
+      <div class="api-note" style="color:var(--text2);">When running locally or inside Claude — localStorage is safe. When hosting publicly (Netlify, Vercel, VPS), <strong>do not store keys in the HTML</strong>. Use the Netlify proxy function in the Hosting Guide — your keys stay on the server, never in the browser.</div>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn-danger" onclick="clearKeys()">Clear All Keys</button>
+      <button class="btn-secondary" onclick="closeModal('apiKeys')">Cancel</button>
+      <button class="btn-primary" onclick="saveKeys()">Save Keys</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// CONFIG
+// ============================================================
+// When self-hosting: set PROXY_URL to your Netlify/server endpoint
+// e.g. const PROXY_URL = 'https://yoursite.netlify.app/.netlify/functions/proxy';
+// When PROXY_URL is empty, calls go direct (works inside Claude, blocked by CORS externally)
+const PROXY_URL = '';
+
+const MODEL_MAP = {
+  'Grok':   { provider:'grok',   model:'grok-3-latest',            format:'openai' },
+  'Claude': { provider:'claude', model:'claude-sonnet-4-20250514', format:'anthropic' },
+  'GPT-4o': { provider:'openai', model:'gpt-4o',                   format:'openai' },
+  'Gemini': { provider:'gemini', model:'gemini-1.5-pro',            format:'gemini' },
+};
+
+let currentProject = "B2B Food Supply – KSA";
+let currentLLM = "Grok";
+let currentTool = "General SEO";
+let currentLang = "en";  // en | ar | bi
+let chatHistory = [];
+let optTargets = ["Google","ChatGPT","Gemini"];
+
+// ============================================================
+// LANGUAGE
+// ============================================================
+function setLang(lang) {
+  currentLang = lang;
+  document.getElementById('btnEN').classList.toggle('active', lang==='en');
+  document.getElementById('btnAR').classList.toggle('active', lang==='ar');
+  document.getElementById('btnBI').classList.toggle('active', lang==='bi');
+  document.body.classList.toggle('ar', lang==='ar');
+  document.getElementById('langBadge').textContent = lang==='en'?'EN':lang==='ar'?'عربي':'EN+AR';
+  document.getElementById('statusLang').textContent = lang==='en'?'🌐 EN':lang==='ar'?'🌐 عربي':'🌐 Bilingual';
+  const ph = {en:'Ask anything about SEO, keywords, content, AEO, GEO...',ar:'اسأل أي شيء عن السيو، الكلمات المفتاحية، المحتوى...',bi:'Ask in English or اسأل بالعربية...'};
+  document.getElementById('chatInput').placeholder = ph[lang];
+  document.getElementById('htmlRoot').lang = lang==='ar'?'ar':'en';
+}
+
+function getLangInstruction() {
+  if(currentLang==='en') return 'Respond ONLY in English.';
+  if(currentLang==='ar') return `Respond ONLY in Arabic (العربية). Use proper Arabic SEO terminology. Write RTL-friendly content. Format keywords in Arabic. Include Arabic-specific search behaviour notes for Saudi Arabia / GCC.`;
+  return `Respond in BOTH languages: English first, then Arabic translation below each section. Arabic section should be complete and properly formatted RTL content.`;
+}
+
+// ============================================================
+// VIEWS
+// ============================================================
+function showView(v, el) {
+  document.querySelectorAll('[id^="view-"]').forEach(e=>e.classList.add('hidden'));
+  document.getElementById('view-'+v).classList.remove('hidden');
+  const titles={dashboard:'Dashboard',chat:'SEO Assistant',tools:'SEO Tools',strategy:'Strategy Builder',hosting:'Hosting Guide'};
+  document.getElementById('pageTitle').textContent = titles[v]||v;
+  document.querySelectorAll('.nav-item').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  if(v==='tools') renderAllTools();
+}
+
+// ============================================================
+// PROJECTS
+// ============================================================
+function setProject(el,name,color){
+  currentProject=name;
+  document.querySelectorAll('.project-item').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('projectBadge').textContent=name;
+  document.getElementById('statusProject').textContent='Project: '+name;
+}
+function createProject(){
+  const name=document.getElementById('np-name').value.trim();
+  if(!name)return;
+  const color=document.getElementById('np-color').value;
+  const list=document.getElementById('projectList');
+  const div=document.createElement('div');
+  div.className='project-item';
+  div.innerHTML=`<div class="project-dot" style="background:${color}"></div><span>${name}</span>`;
+  div.onclick=()=>setProject(div,name,color);
+  list.appendChild(div);
+  document.getElementById('projCount').textContent=list.children.length+1;
+  closeModal('newProject');
+  document.getElementById('np-name').value='';
+}
+
+// ============================================================
+// LLM SELECT
+// ============================================================
+function selectLLM(el,name){
+  currentLLM=name;
+  document.querySelectorAll('#sidebarLLM .nav-item').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  const m=MODEL_MAP[name];
+  document.getElementById('statusModel').textContent=name+' ('+(m?m.model:name)+')';
+  document.getElementById('activeLLMLabel').textContent=name;
+}
+function toggleOpt(el,t){
+  el.classList.toggle('active');
+  if(el.classList.contains('active')){if(!optTargets.includes(t))optTargets.push(t);}
+  else{optTargets=optTargets.filter(x=>x!==t);}
+}
+
+// ============================================================
+// API KEYS
+// ============================================================
+function saveKeys(){
+  ['grok','claude','openai','gemini'].forEach(k=>{
+    const v=document.getElementById('key-'+k).value.trim();
+    if(v) localStorage.setItem('seo_key_'+k,v);
+  });
+  updateKeyStatuses();
+  closeModal('apiKeys');
+  showToast('API keys saved to localStorage');
+}
+function clearKeys(){
+  ['grok','claude','openai','gemini'].forEach(k=>{ localStorage.removeItem('seo_key_'+k); document.getElementById('key-'+k).value=''; });
+  updateKeyStatuses();
+}
+function getKey(provider){
+  return localStorage.getItem('seo_key_'+provider)||'';
+}
+function updateKeyStatuses(){
+  ['grok','claude','openai','gemini'].forEach(k=>{
+    const el=document.getElementById('st-'+k);
+    if(el) el.className='api-status '+(getKey(k)?'ok':'empty');
+  });
+}
+function openApiModal(){
+  ['grok','claude','openai','gemini'].forEach(k=>{
+    const v=getKey(k);
+    if(v) document.getElementById('key-'+k).value=v;
+  });
+  updateKeyStatuses();
+  openModal('apiKeys');
+}
+function showToast(msg){
+  const t=document.createElement('div');
+  t.style.cssText='position:fixed;bottom:24px;right:24px;background:var(--accent);color:#0a0d12;padding:10px 18px;border-radius:8px;font-size:12px;font-weight:700;z-index:999;animation:msgIn 0.3s ease;';
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>t.remove(),2500);
+}
+
+// ============================================================
+// TOOLS
+// ============================================================
+const allTools=[
+  {id:'keyword',name:'Keyword Engine',icon:'🔑',desc:'All 4 intent types + long/short tail — EN & AR',tag:'SEO',cat:'seo'},
+  {id:'aeo',name:'AEO Answer Writer',icon:'🤖',desc:'Direct answers AI engines quote — bilingual',tag:'AEO',cat:'aeo'},
+  {id:'geo',name:'GEO Brand Strategy',icon:'🌐',desc:'Multi-platform brand presence for generative search',tag:'GEO',cat:'geo'},
+  {id:'local',name:'Local SEO Pack',icon:'📍',desc:'Google Business, Arabic citations, geo-targeted content',tag:'Local',cat:'local'},
+  {id:'programmatic',name:'Programmatic SEO',icon:'⚡',desc:'URL templates, bulk landing page logic at scale',tag:'Prog',cat:'prog'},
+  {id:'content',name:'Content Writer',icon:'✍️',desc:'Pillar pages, blogs, FAQs, meta — bilingual',tag:'SEO',cat:'seo'},
+  {id:'cluster',name:'Topic Cluster Builder',icon:'🗺️',desc:'Topical authority map: pillar + clusters',tag:'Strategy',cat:'seo'},
+  {id:'audit',name:'Technical SEO Audit',icon:'🔍',desc:'Schema, Core Web Vitals, crawlability',tag:'Technical',cat:'technical'},
+  {id:'schema',name:'Schema Generator',icon:'🏷️',desc:'FAQ, Org, Product, BreadcrumbList JSON-LD',tag:'Technical',cat:'technical'},
+  {id:'meta',name:'Meta Tag Writer',icon:'📝',desc:'Titles & descriptions for Google + AI snippets',tag:'SEO',cat:'seo'},
+  {id:'eeat',name:'E-E-A-T Builder',icon:'🏆',desc:'Trust signals, author pages, review strategy',tag:'Authority',cat:'geo'},
+  {id:'voice',name:'Voice Search Optimizer',icon:'🎙️',desc:'Conversational queries & featured snippet targets',tag:'Voice',cat:'aeo'},
+  {id:'competitor',name:'Competitor Gap Analysis',icon:'🔬',desc:'Keyword & content gaps vs competitors',tag:'Research',cat:'seo'},
+  {id:'backlink',name:'Link & Mention Strategy',icon:'🔗',desc:'2026 backlink + brand mention acquisition plan',tag:'Authority',cat:'geo'},
+  {id:'report',name:'SEO Report Builder',icon:'📊',desc:'Monthly client-ready SEO performance report',tag:'Reporting',cat:'seo'},
+  {id:'intl',name:'International SEO',icon:'🌍',desc:'Hreflang, GCC multi-country geo-targeting',tag:'International',cat:'seo'},
+  {id:'arabic',name:'Arabic SEO Specialist',icon:'🇸🇦',desc:'Full Arabic keyword research & content for GCC',tag:'Arabic',cat:'local'},
+];
+const tagClass={SEO:'tag-seo',AEO:'tag-aeo',GEO:'tag-geo',Local:'tag-local',Prog:'tag-prog',Technical:'tag-tech',Strategy:'tag-aeo',Authority:'tag-geo',Voice:'tag-aeo',Research:'tag-seo',Reporting:'tag-seo',International:'tag-seo',Arabic:'tag-local'};
+const catClass={seo:'seo',aeo:'aeo',geo:'geo',local:'local',prog:'prog',technical:'local'};
+
+function renderAllTools(filter='all'){
+  const grid=document.getElementById('allToolsGrid');
+  const tools=filter==='all'?allTools:allTools.filter(t=>t.cat===filter);
+  grid.innerHTML=tools.map(t=>`
+    <div class="tool-card ${catClass[t.cat]||'seo'}" onclick="launchTool('${t.id}')">
+      <div class="tool-icon">${t.icon}</div>
+      <div class="tool-name">${t.name}</div>
+      <div class="tool-desc">${t.desc}</div>
+      <span class="tool-tag ${tagClass[t.tag]||'tag-seo'}">${t.tag}</span>
+    </div>`).join('');
+}
+function filterTools(el,cat){
+  document.querySelectorAll('#segTabs .seg-tab').forEach(b=>b.className='seg-tab');
+  const cls={all:'active-seo',seo:'active-seo',aeo:'active-aeo',geo:'active-geo',local:'active-local',prog:'active-prog',technical:'active-technical'};
+  el.classList.add(cls[cat]||'active-seo');
+  renderAllTools(cat);
+}
+
+// ============================================================
+// CONTEXT
+// ============================================================
+function getContext(){
+  const name=document.getElementById('bizName')?.value||'my business';
+  const niche=document.getElementById('bizNiche')?.value||'B2B FMCG';
+  const country=document.getElementById('bizCountry')?.value||'Saudi Arabia';
+  const products=document.getElementById('bizProducts')?.value||'';
+  const audience=document.getElementById('bizAudience')?.value||'B2B';
+  const city=document.getElementById('bizCity')?.value||'';
+  return `${name} (${niche}, ${audience}, ${country}${city?', '+city:''}${products?', products: '+products:''})`;
+}
+function saveContext(){
+  const btn=event.currentTarget;
+  btn.textContent='✓ Saved';
+  setTimeout(()=>btn.textContent='Save Context → Use in All Tools',2000);
+}
+
+// ============================================================
+// LAUNCH TOOL
+// ============================================================
+function launchTool(toolId){
+  const tool=allTools.find(t=>t.id===toolId)||{name:toolId,icon:'💡'};
+  currentTool=tool.icon+' '+tool.name;
+  document.getElementById('activeTool').textContent=currentTool;
+  showView('chat',document.querySelectorAll('.nav-item')[1]);
+  const ctx=getContext();
+  const prompts={
+    keyword:`Generate a complete keyword research set for ${ctx}. Cover all 4 intent types: Informational, Navigational, Commercial, Transactional. Include long-tail and short-tail for each. Format with clear sections and use keyword pills format.`,
+    aeo:`Write AEO-optimised direct answers for the top 5 questions a B2B buyer asks about ${ctx}. Each answer: 40-60 words. Ready to be extracted by ChatGPT, Gemini, AI Overviews. Also output as FAQ schema JSON-LD.`,
+    geo:`Create a GEO (Generative Engine Optimization) brand signal strategy for ${ctx}. Cover: platforms to list on, content distribution channels, mention strategy, how to appear in ChatGPT/Gemini answers for GCC buyers.`,
+    local:`Build a complete Local SEO strategy for ${ctx}. Include: Google Business Profile setup, local citation list (Arabic + English directories), geo-targeted keyword clusters, and content plan for Saudi cities.`,
+    programmatic:`Design a Programmatic SEO structure for ${ctx}. Include: URL template pattern, page template variables, content blocks, internal linking logic, and 5 example page combinations (product × city).`,
+    content:`Write a full SEO content brief for the main collection page of ${ctx}. Include: H1, meta title (60 chars), meta description (155 chars), H2 sections, FAQ questions, internal links, and word count target.`,
+    cluster:`Build a complete Topic Cluster map for ${ctx}. Output: 1 pillar page + 10 cluster pages. For each: title, target keyword, content type, internal link relationship.`,
+    audit:`Technical SEO audit checklist for ${ctx}. Cover: schema markup needed (types), page speed issues, mobile-first requirements, URL structure best practices, Core Web Vitals targets, crawlability checks.`,
+    schema:`Generate complete JSON-LD schema markup for ${ctx}. Include: Organization, FAQPage, BreadcrumbList, and Product schemas. Ready to paste into HTML head.`,
+    meta:`Write SEO-optimised meta titles and descriptions for 5 key pages of ${ctx}. Follow 2026 best practices for Google ranking AND AI snippet inclusion. Include character counts.`,
+    eeat:`Build an E-E-A-T strategy for ${ctx}. Cover all 4 pillars: Experience (case studies, results), Expertise (niche content), Authority (backlinks, mentions), Trustworthiness (reviews, certifications, HTTPS).`,
+    voice:`Generate voice search keywords and featured snippet targets for ${ctx}. Include question-format queries (who, what, where, how, best), direct answers, and position zero targets.`,
+    competitor:`Outline a competitor analysis framework for ${ctx} in Saudi Arabia. What to research, which tools to use, how to find keyword gaps, content gaps, and backlink opportunities.`,
+    backlink:`Create a 2026 link building and brand mention strategy for ${ctx}. Focus: GCC industry directories, Arabic news sites, LinkedIn thought leadership, business portals in Saudi Arabia.`,
+    report:`Generate a monthly SEO report template for ${ctx} clients. Sections: executive summary, ranking changes, organic traffic, AEO mentions, local visibility, content performance, next month priorities.`,
+    intl:`Design an international SEO strategy for ${ctx} expanding to GCC: Saudi, UAE, Kuwait, Qatar, Bahrain, Oman. Cover hreflang implementation, country targeting, and localised content per market.`,
+    arabic:`Generate a complete Arabic SEO strategy for ${ctx}. Include: Arabic keyword research with search volumes, Arabic content structure, Arabic meta tags, Arabic FAQ for AEO, and Arabic Google Business Profile content. All output in Arabic.`,
+  };
+  const prompt=prompts[toolId]||`Help me with ${tool.name} for: ${ctx}.`;
+  setTimeout(()=>sendMessageText(prompt),300);
+}
+
+// ============================================================
+// CHAT
+// ============================================================
+function handleKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}}
+function sendQuick(el){document.getElementById('chatInput').value=el.textContent;sendMessage();}
+function sendMessage(){
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();
+  if(!text)return;
+  input.value='';
+  sendMessageText(text);
+}
+function sendMessageText(text){
+  addMsg('user',text);
+  chatHistory.push({role:'user',content:text});
+  setLoading(true);
+  callLLM();
+}
+function addMsg(role,html,isHtml=false){
+  const box=document.getElementById('chatBox');
+  const div=document.createElement('div');
+  div.className='msg '+role;
+  const bubble=document.createElement('div');
+  bubble.className='msg-bubble';
+  if(currentLang==='ar'||currentLang==='bi') bubble.classList.add('ar-output');
+  if(isHtml) bubble.innerHTML=html;
+  else bubble.textContent=html;
+  const meta=document.createElement('div');
+  meta.className='msg-meta';
+  meta.textContent=role==='user'?'You':'SEO CMD · '+currentLLM;
+  div.appendChild(bubble);div.appendChild(meta);
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+  return bubble;
+}
+function setLoading(on){
+  document.getElementById('sendBtn').disabled=on;
+  const box=document.getElementById('chatBox');
+  if(on){
+    const d=document.createElement('div');
+    d.id='typing-indicator';d.className='msg ai';
+    d.innerHTML='<div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+    box.appendChild(d);box.scrollTop=box.scrollHeight;
+  } else {
+    const t=document.getElementById('typing-indicator');
+    if(t)t.remove();
+  }
+}
+
+// ============================================================
+// UNIVERSAL LLM CALL
+// ============================================================
+async function callLLM(){
+  const ctx=getContext();
+  const targets=optTargets.join(', ')||'Google';
+  const langInstruction=getLangInstruction();
+  const sysPrompt=`You are an expert SEO strategist in 2026 inside an SEO Command Center platform.
+
+Project: ${ctx}
+Optimization targets: ${targets}
+Active tool: ${currentTool}
+
+${langInstruction}
+
+You specialise in: Traditional SEO, AEO (Answer Engine Optimization), GEO (Generative Engine Optimization), Local SEO (Arabic + English), Programmatic SEO, Content Strategy, Technical SEO, International SEO for GCC markets.
+
+Rules:
+1. Use project context — don't re-ask for information.
+2. Format responses with clear H4 headings and bullet points.
+3. Keywords: use pill format: <div class="kw-row"><span class="kw-pill">keyword</span></div>
+4. For Arabic output: use proper Arabic SEO terminology. Keywords in Arabic script. RTL structure.
+5. For bilingual: English section then Arabic section clearly separated.
+6. Be specific, actionable, B2B-focused for Saudi Arabia / GCC.
+7. AEO answers: 40-60 words each, extractable by AI engines.
+8. Reference 2026 realities: zero-click, E-E-A-T, entity SEO, AI-driven search.`;
+
+  const cfg=MODEL_MAP[currentLLM]||MODEL_MAP['Grok'];
+  const key=getKey(cfg.provider);
+
+  try {
+    let result='';
+    if(PROXY_URL){
+      // External hosting: route through proxy
+      const resp=await fetch(PROXY_URL,{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({provider:cfg.provider,payload:buildPayload(cfg,sysPrompt)})});
+      const data=await resp.json();
+      result=extractText(data,cfg.format);
+    } else if(cfg.format==='anthropic'){
+      // Direct Anthropic call (works inside Claude)
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+        headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01',...(key?{'x-api-key':key}:{})},
+        body:JSON.stringify({model:cfg.model,max_tokens:1500,system:sysPrompt,messages:chatHistory})});
+      const data=await resp.json();
+      result=data.content?.[0]?.text||JSON.stringify(data);
+    } else if(cfg.format==='openai'){
+      // Grok / OpenAI compatible
+      const endpoint=cfg.provider==='grok'?'https://api.x.ai/v1/chat/completions':'https://api.openai.com/v1/chat/completions';
+      if(!key){result='⚠️ No '+currentLLM+' API key found. Click "API Keys & Settings" in the sidebar to add your key.';setLoading(false);addMsg('ai',result);return;}
+      const msgs=[{role:'system',content:sysPrompt},...chatHistory];
+      const resp=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+        body:JSON.stringify({model:cfg.model,max_tokens:1500,messages:msgs})});
+      const data=await resp.json();
+      result=data.choices?.[0]?.message?.content||JSON.stringify(data);
+    } else if(cfg.format==='gemini'){
+      if(!key){result='⚠️ No Gemini API key. Add it in API Keys & Settings.';setLoading(false);addMsg('ai',result);return;}
+      const lastMsg=chatHistory[chatHistory.length-1]?.content||'Hello';
+      const resp=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${key}`,
+        {method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({contents:[{parts:[{text:sysPrompt+'\n\n'+lastMsg}]}]})});
+      const data=await resp.json();
+      result=data.candidates?.[0]?.content?.parts?.[0]?.text||JSON.stringify(data);
+    }
+    setLoading(false);
+    chatHistory.push({role:'assistant',content:result});
+    addMsg('ai',formatResponse(result),true);
+  } catch(err){
+    setLoading(false);
+    addMsg('ai','⚠️ Error: '+err.message+'. If running externally, set up the proxy (see Hosting Guide).');
+  }
+}
+
+function buildPayload(cfg,sysPrompt){
+  if(cfg.format==='anthropic') return {model:cfg.model,max_tokens:1500,system:sysPrompt,messages:chatHistory};
+  if(cfg.format==='openai') return {model:cfg.model,max_tokens:1500,messages:[{role:'system',content:sysPrompt},...chatHistory]};
+  return {model:cfg.model,max_tokens:1500,messages:[{role:'system',content:sysPrompt},...chatHistory]};
+}
+function extractText(data,format){
+  if(format==='anthropic') return data.content?.[0]?.text||'';
+  if(format==='openai') return data.choices?.[0]?.message?.content||'';
+  return JSON.stringify(data);
+}
+
+// ============================================================
+// FORMAT RESPONSE
+// ============================================================
+function formatResponse(text){
+  return text
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/^#{1,4} (.+)$/gm,'<h4>$1</h4>')
+    .replace(/^[-•] (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>.*<\/li>)/gs,m=>'<ul>'+m+'</ul>')
+    .replace(/<\/ul><ul>/g,'')
+    .replace(/\n\n/g,'<br><br>')
+    .replace(/\n/g,'<br>');
+}
+function clearChat(){
+  chatHistory=[];
+  document.getElementById('chatBox').innerHTML=`<div class="msg ai"><div class="msg-bubble"><h4>Chat cleared</h4>Start a new task.</div><div class="msg-meta">SEO CMD · ${currentLLM}</div></div>`;
+}
+
+// ============================================================
+// STRATEGY BUILDER
+// ============================================================
+async function buildStrategy(){
+  const out=document.getElementById('strategyOutput');
+  out.innerHTML='<div class="msg ai"><div class="msg-bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>';
+  const ctx=getContext();
+  const langInstruction=getLangInstruction();
+  const prompt=`Build a complete 2026 SEO strategy for: ${ctx}
+
+${langInstruction}
+
+Structure:
+1. SEO Foundation — technical + on-page priorities
+2. Keyword Strategy — top 10 target keywords by intent
+3. AEO Plan — top 5 questions to answer for AI engines (40-60 words each)
+4. GEO Roadmap — platforms and channels for brand signals
+5. Local SEO — Saudi Arabia geo-targeting priority actions
+6. Content Plan — 1 pillar page + 5 cluster topics
+7. 90-Day Action Plan — month by month
+8. KPIs to track in 2026
+
+Be specific, actionable, and B2B-focused.`;
+
+  const cfg=MODEL_MAP[currentLLM]||MODEL_MAP['Grok'];
+  const key=getKey(cfg.provider);
+  try {
+    let result='';
+    if(cfg.format==='anthropic'){
+      const resp=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',
+        headers:{'Content-Type':'application/json','anthropic-version':'2023-06-01',...(key?{'x-api-key':key}:{})},
+        body:JSON.stringify({model:cfg.model,max_tokens:1500,messages:[{role:'user',content:prompt}]})});
+      const data=await resp.json();
+      result=data.content?.[0]?.text||'';
+    } else if(cfg.format==='openai'){
+      if(!key){out.innerHTML='<div class="msg ai"><div class="msg-bubble">⚠️ Add '+currentLLM+' API key first.</div></div>';return;}
+      const endpoint=cfg.provider==='grok'?'https://api.x.ai/v1/chat/completions':'https://api.openai.com/v1/chat/completions';
+      const resp=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+key},
+        body:JSON.stringify({model:cfg.model,max_tokens:1500,messages:[{role:'user',content:prompt}]})});
+      const data=await resp.json();
+      result=data.choices?.[0]?.message?.content||'';
+    }
+    const formatted=formatResponse(result);
+    out.innerHTML=`<div class="msg ai"><div class="msg-bubble ${currentLang!=='en'?'ar-output':''}">${formatted}</div><div class="msg-meta">SEO CMD · Strategy · ${currentLLM}</div></div>`;
+  } catch(err){
+    out.innerHTML=`<div class="msg ai"><div class="msg-bubble">⚠️ ${err.message}</div></div>`;
+  }
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id){
+  if(id==='apiKeys'){openApiModal();return;}
+  document.getElementById('modal-'+id).classList.add('open');
+}
+function closeModal(id){document.getElementById('modal-'+id).classList.remove('open');}
+document.querySelectorAll('.modal-bg').forEach(el=>{
+  el.addEventListener('click',e=>{if(e.target===el)el.classList.remove('open');});
+});
+
+// ============================================================
+// INIT
+// ============================================================
+updateKeyStatuses();
+</script>
+</body>
+</html>
